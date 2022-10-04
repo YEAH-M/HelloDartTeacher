@@ -1,15 +1,16 @@
 import 'dart:math';
 
-// 数字、集合、字符串等（https://dart.cn/guides/libraries/library-tour#dartcore---numbers-collections-strings-and-more）
-void dartcore_numbers_numbers_collections_strings_and_more() {
-  print('\n');
-  print('#' * 40);
-  print('数字、集合、字符串等');
-  print('#' * 40);
+void dart_core() {
+  var anObject = 'i think';
+  var tea = 'milk';
+  print(anObject);
+  print('i drink $tea');
+
 
   assert(int.parse('42') == 42);
   assert(int.parse('0x42') == 66);
   assert(double.parse('0.50') == 0.5);
+ 
 
   assert(int.parse('42', radix: 16) == 66);
 
@@ -52,14 +53,13 @@ void dartcore_numbers_numbers_collections_strings_and_more() {
   // Use split() with an empty string parameter to get
   // a list of all characters (as Strings); good for
   // iterating.
-  for (final char in 'hello'.split('')) {
+  for (final char in 'life is struggle'.split('')) {
     print(char);
   }
 
-  // Get all the UTF-16 code units in the string.
-  // UTF 编码（https://www.jianshu.com/p/ba7fb4a651c7）
   var codeUnitList = 'Never odd or even'.codeUnits.toList();
   assert(codeUnitList[0] == 78);
+
 
   // Convert to uppercase.
   assert('web apps'.toUpperCase() == 'WEB APPS');
@@ -87,11 +87,11 @@ void dartcore_numbers_numbers_collections_strings_and_more() {
     ..write('Use a StringBuffer for ')
     ..writeAll(['efficient', 'string', 'creation'], ' ')
     ..write('.');
-  // Cascade notation (https://stackoverflow.com/questions/49447736/list-use-of-double-dot-in-dart)
 
   var fullString = sb.toString();
 
   assert(fullString == 'Use a StringBuffer for efficient string creation.');
+
 
   // Here's a regular expression for one or more digits.
   var numbers = RegExp(r'\d+');
@@ -104,7 +104,25 @@ void dartcore_numbers_numbers_collections_strings_and_more() {
   assert(someDigits.contains(numbers));
 }
 
-// 集合 (https://dart.cn/guides/libraries/library-tour#collections)
+//正则表达式
+void regular_expressions()
+{
+  // Here's a regular expression for one or more digits.
+var numbers = RegExp(r'\d+');
+
+var allCharacters = 'llamas live fifteen to twenty years';
+var someDigits = 'llamas live 15 to 20 years';
+
+// contains() can use a regular expression.
+assert(!allCharacters.contains(numbers));
+assert(someDigits.contains(numbers));
+
+// Replace every match with another string.
+var exedOut = someDigits.replaceAll(numbers, 'XX');
+assert(exedOut == 'llamas live XX to XX years');
+}
+
+//集合
 void the_lists() {
   // Create an empty list of strings.
   var grains = <String>[];
@@ -301,22 +319,23 @@ void the_public_methods() {
   assert(!teas.every(isDecaffeinated));
 }
 
-void collections() {
+
+
+// URIs 
+void the_uris()
+{
+  var uri = 'https://example.org/api?foo=some message';
+
+  var encoded = Uri.encodeFull(uri);
+  var decoded = Uri.decodeFull(encoded);
   print('\n');
   print('#' * 40);
-  print('集合');
+  print('URIs');
   print('#' * 40);
-
-  the_lists();
-  the_sets();
-  the_maps();
-  the_public_methods();
+  print(encoded);
+  print(decoded);
 }
-
-// URIs (https://dart.cn/guides/libraries/library-tour#uris)
-// TODO: 暂缓
-
-// 时间和日期 （https://dart.cn/guides/libraries/library-tour#dates-and-times）
+// 时间和日期 
 void dates_and_times() {
   print('\n');
   print('#' * 40);
@@ -364,10 +383,39 @@ void dates_and_times() {
 // Returns a Duration object.
   var duration = y2001.difference(y2k);
   assert(duration.inDays == 366); // y2k was a leap year.
+  print(y2k);
 }
 
-// 工具类 （https://dart.cn/guides/libraries/library-tour#utility-classes）
-// TODO: 暂缓
+// 工具类 
+class Line implements Comparable<Line> {
+  final int length;
+  const Line(this.length);
+
+  @override
+  int compareTo(Line other) => length - other.length;
+}
+
+//工具类鲍勃和爱丽丝
+class Person {
+  final String firstName, lastName;
+
+  Person(this.firstName, this.lastName);
+
+  // Override hashCode using the static hashing methods
+  // provided by the `Object` class.
+  @override
+  int get hashCode => Object.hash(firstName, lastName);
+
+  // You should generally implement operator `==` if you
+  // override `hashCode`.
+  @override
+  bool operator ==(dynamic other) {
+    return other is Person &&
+        other.firstName == firstName &&
+        other.lastName == lastName;
+  }
+}
+
 
 // 异常 (https://dart.cn/guides/libraries/library-tour#exceptions)
 // TODO: 暂缓
@@ -420,17 +468,46 @@ void math_and_random() {
 // TODO: 自学，下周详细讲
 
 void main(List<String> args) {
-  // 数字、集合、字符串等
-  dartcore_numbers_numbers_collections_strings_and_more();
+  // 数字
+  dart_core();
+
+  //正则表达式
+  regular_expressions();
 
   // 集合
-  collections();
+  the_lists();
+
+  //set
+  the_sets();
+
+  //maps
+  the_maps();
+
+  //公共集合方法
+  the_public_methods();
+
+  //URL
+  the_uris();
 
   // 时间和日期
   dates_and_times();
 
   // 数学和随机数
   math_and_random();
+
+  //工具类
+  var short = const Line(1);
+  var long = const Line(100);
+  assert(short.compareTo(long) < 0);
+
+  //工具类鲍勃和爱丽丝
+  var p1 = Person('Bob', 'Smith');
+  var p2 = Person('Bob', 'Smith');
+  var p3 = 'not a person';
+  assert(p1.hashCode == p2.hashCode);
+  assert(p1 == p2);
+  assert(p1 != p3);
+
 
   print('done.');
 }
